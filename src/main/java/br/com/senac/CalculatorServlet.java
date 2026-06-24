@@ -28,7 +28,7 @@ public class CalculatorServlet extends HttpServlet {
                 if (n1 == 0 || n2 == 0) {
                     resp.getWriter().println("Erro: não é possível dividir por zero.");
                 } else {
-                    resp.getWriter().println("Resultado: " + (n1 / n2));
+                    resp.getWriter().println("Resultado:  " + (n1 / n2));
                 }
             }
         }
