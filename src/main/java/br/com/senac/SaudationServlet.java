@@ -21,7 +21,7 @@ public class SaudationServlet extends HttpServlet {
             name = "Visitante";
             resp.getWriter().println("<p>Olá " + name + ", seja bem-vindo(a)</p>");
         } else if (name.length() == 1) {
-            resp.getWriter().println("<p>Erro: nome deve ter ao menos 2 caracteres</p>");
+            resp.getWriter().println("<p style=\"color:red\">Erro: nome deve ter ao menos 2 caracteres</p>");
         } else {
             resp.getWriter().println("<p>Olá " + name + ", seja bem-vindo(a)</p>");
         }
