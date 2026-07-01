@@ -25,14 +25,30 @@ public class TimeDAO {
         String sql = "INSERT INTO TIME(NOME) VALUES (?) ";
 
         try (Connection conn = connection();
-            PreparedStatement stmt = conn.prepareStatement(sql,  Statement.RETURN_GENERATED_KEYS)){
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, time.getNome());
             stmt.executeUpdate();
 
-            try (ResultSet rs = stmt.getGeneratedKeys()){
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
                     time.setId(rs.getInt(1));
+                }
+            }
+        }
+        return time;
+    }
+
+    public TimeEntity getById(int id) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT * FROM TIME WHERE id = ?";
+
+        TimeEntity time = null;
+        try (Connection connection = connection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    time = new TimeEntity(rs.getInt("id"), rs.getString("nome"));
                 }
             }
         }
@@ -54,4 +70,17 @@ public class TimeDAO {
         return times;
     }
 
+    public boolean deleteById(int id) throws SQLException, ClassNotFoundException{
+        String sql = "DELETE FROM TIME WHERE ID = ?";
+
+        try (Connection connection = connection();
+        PreparedStatement stmt = connection.prepareStatement(sql)){
+            stmt.setInt(1, id);
+
+            int affectedLines = stmt.executeUpdate();
+
+            return affectedLines > 0;
+        }
+
+    }
 }

@@ -30,9 +30,19 @@ public class TimeServlet extends HttpServlet {
             if (pathInfo == null || pathInfo.equals("/")) {
                 List<TimeEntity> times = dao.getAll();
                 resp.getWriter().write(gson.toJson(times));
+            } else {
+                int id = Integer.parseInt(pathInfo.substring(1));
+                TimeEntity time = dao.getById(id);
+                if (time != null) {
+                    resp.getWriter().println(gson.toJson(time));
+                } else {
+                    resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                }
             }
-        } catch (Exception ex) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            Error error = throwError("Erro ao listar", e);
+            resp.setStatus(500);
+            resp.getWriter().println(gson.toJson(error));
         }
     }
 
@@ -47,8 +57,33 @@ public class TimeServlet extends HttpServlet {
             TimeEntity timeCriado = dao.insert(time);
             resp.setStatus(201);
             resp.getWriter().print(gson.toJson(timeCriado));
-        } catch (Exception e){
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            Error error = throwError("Erro ao inserir", e);
+            resp.setStatus(500);
+            resp.getWriter().println(gson.toJson(error));
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
+
+        String pathInfo = req.getPathInfo();
+
+        try {
+            if (pathInfo != null || pathInfo.length() > 1) {
+                int id = Integer.parseInt(pathInfo.substring(1));
+                boolean deleted = dao.deleteById(id);
+                if (deleted) {
+                    resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                }
+            } else {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            }
+        } catch (Exception e) {
+            Error error = throwError("Erro ao excluir", e);
+            resp.setStatus(500);
+            resp.getWriter().println(gson.toJson(error));
         }
     }
 
@@ -62,6 +97,10 @@ public class TimeServlet extends HttpServlet {
             }
         }
         return gson.fromJson(sb.toString(), classe);
+    }
+
+    private Error throwError(String msg, Exception e) {
+        return new Error(msg, e.getMessage());
     }
 }
 
