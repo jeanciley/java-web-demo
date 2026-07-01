@@ -1,4 +1,4 @@
-package br.com.senac.time;
+package br.com.senac.team;
 
 public class Error {
 

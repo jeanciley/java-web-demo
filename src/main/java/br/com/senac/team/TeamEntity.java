@@ -1,14 +1,14 @@
-package br.com.senac.time;
+package br.com.senac.team;
 
-public class TimeEntity {
+public class TeamEntity {
 
     private int id;
     private String nome;
 
-    public TimeEntity() {
+    public TeamEntity() {
     }
 
-    public TimeEntity(int id, String nome) {
+    public TeamEntity(int id, String nome) {
         this.id = id;
         this.nome = nome;
     }

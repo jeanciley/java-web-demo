@@ -1,4 +1,4 @@
-package br.com.senac.time;
+package br.com.senac.team;
 
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
@@ -9,13 +9,12 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.sql.Time;
 import java.util.List;
 
 @WebServlet("/time/*")
-public class TimeServlet extends HttpServlet {
+public class TeamServlet extends HttpServlet {
 
-    private final TimeDAO dao = new TimeDAO();
+    private final TeamDAO dao = new TeamDAO();
     private final Gson gson = new Gson();
 
     @Override
@@ -28,13 +27,13 @@ public class TimeServlet extends HttpServlet {
 
         try {
             if (pathInfo == null || pathInfo.equals("/")) {
-                List<TimeEntity> times = dao.getAll();
-                resp.getWriter().write(gson.toJson(times));
+                List<TeamEntity> teams = dao.getAll();
+                resp.getWriter().write(gson.toJson(teams));
             } else {
                 int id = Integer.parseInt(pathInfo.substring(1));
-                TimeEntity time = dao.getById(id);
-                if (time != null) {
-                    resp.getWriter().println(gson.toJson(time));
+                TeamEntity team = dao.getById(id);
+                if (team != null) {
+                    resp.getWriter().println(gson.toJson(team));
                 } else {
                     resp.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
@@ -52,11 +51,11 @@ public class TimeServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
 
         try {
-            TimeEntity time = lerCorpoJson(req, TimeEntity.class);
+            TeamEntity team = lerCorpoJson(req, TeamEntity.class);
 
-            TimeEntity timeCriado = dao.insert(time);
+            TeamEntity createdTeam = dao.insert(team);
             resp.setStatus(201);
-            resp.getWriter().print(gson.toJson(timeCriado));
+            resp.getWriter().print(gson.toJson(createdTeam));
         } catch (Exception e) {
             Error error = throwError("Erro ao inserir", e);
             resp.setStatus(500);
