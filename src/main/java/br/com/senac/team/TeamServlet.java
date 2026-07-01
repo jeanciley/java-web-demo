@@ -51,7 +51,7 @@ public class TeamServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
 
         try {
-            TeamEntity team = lerCorpoJson(req, TeamEntity.class);
+            TeamEntity team = readJsonBody(req, TeamEntity.class);
 
             TeamEntity createdTeam = dao.insert(team);
             resp.setStatus(201);
@@ -86,7 +86,26 @@ public class TeamServlet extends HttpServlet {
         }
     }
 
-    private <T> T lerCorpoJson(HttpServletRequest req, Class<T> classe) throws IOException {
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
+
+        try {
+            TeamEntity team = readJsonBody(req, TeamEntity.class);
+            boolean uptaded = dao.update(team);
+            if (uptaded) {
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            } else {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            }
+        } catch (Exception e){
+            Error error = throwError("Erro ao atualizar", e);
+            resp.setStatus(500);
+            resp.getWriter().println(gson.toJson(error));
+        }
+    }
+
+    private <T> T readJsonBody(HttpServletRequest req, Class<T> classe) throws IOException {
         StringBuilder sb = new StringBuilder();
 
         try (BufferedReader reader = req.getReader()) {
